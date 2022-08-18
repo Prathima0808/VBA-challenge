@@ -1,0 +1,140 @@
+'Module_2, VBscript
+'Multiple year stock data
+'script by Prathima Polavarapu
+
+Sub Stock_Data()
+
+'Creating Files for opening and closing prices of 2018, 2019 and 2020 years
+
+  Dim count, i, volume, Total, column, rc As Long
+  Dim openval, closeval, variance, percentchange As Double
+  
+ 'Looping Through all sheets
+ 
+ For Each ws In Worksheets
+    openval = 1
+    closeval = 0
+    column = 1
+    count = 1
+    tem = 1
+    'volume = 0
+  
+  
+'Creating Variables for Ticket Name,Yearly and Percent Change
+'adds the names of the Columns to column Header
+
+ rc = ws.Cells(Rows.count, 1).End(xlUp).Row
+    volume = 0
+    ws.Cells(1, 10).Value = "Ticker"
+    ws.Cells(1, 11).Value = "Yearly change"
+    ws.Cells(1, 12).Value = "Percentage change"
+    ws.Cells(1, 13).Value = "Total stock volume"
+  
+ 
+ 'Loops through all the rows
+  
+  For i = 2 To rc
+    
+    If ws.Cells(i + 1, column).Value = ws.Cells(i, column).Value Then
+         If (tem = 1) Then
+             openval = ws.Cells(i, column + 2).Value
+                volume = ws.Cells(count + 1, 13).Value
+                tem = 0
+    End If
+       ws.Cells(count + 1, 13).Value = ws.Cells(count + 1, 13) + ws.Cells(i, 7).Value
+       
+        ElseIf ws.Cells(i + 1, column).Value <> ws.Cells(i, column).Value Then
+        
+        'Creating variables determined respective rows
+        
+            ws.Cells(count + 1, 10).Value = ws.Cells(i, column).Value
+            ws.Cells(count + 1, 13).Value = ws.Cells(count + 1, 13) + ws.Cells(i, 7).Value
+            
+            'Opening &Closing Values of each sheet
+       
+            closeval = ws.Cells(i, column + 5).Value
+            variance = closeval - openval
+      
+      'Change colors
+      
+      If (variance < 0) Then
+        ws.Cells(count + 1, 11).Interior.ColorIndex = 3
+      Else
+        ws.Cells(count + 1, 11).Interior.ColorIndex = 4
+      End If
+      
+       ws.Cells(count + 1, 11).Value = variance
+       
+      
+                
+        If (openval <> 0) Then
+            percentchange = (variance / openval) * 100
+        End If
+        
+       ws.Cells(count + 1, 12).Value = Str(Round(percentchange, 2)) + "%"
+      
+   
+        percentchange = 1
+        openval = 1
+        closeval = 0
+        count = count + 1
+        tem = 1
+    End If
+
+ Next i
+ 
+ 'Bonus work
+ 
+ 
+ 'working through Greatest %increase, %decrease and TotalValue of range levels.
+ 
+ 
+ 'Greatest % Increase
+ 
+      GratestIncrease = Worksheet.Max(ws.Range("K:K"))
+      
+     GratestPerIncrease = Worksheet.Match(max_Percent, ws.Range("k:K"), 0)
+     ws.Range("Q2") = max_Percent
+     ws.Range("P2") = ws.Cells(maxRowpercent, 9).Value
+     ws.Range("Q2").Style = "percent"
+     ws.Range("Q2").NumberFormat = "0.00%"
+     
+ 'Greatest % Decrease
+ 
+     
+     GratestDecrease = Worksheet.Max(ws.Range("K:K"))
+      
+     GratestDecrease = Worksheet.Match(min_Percent, ws.Range("k:K"), 0)
+     ws.Range("Q3") = min_Percent
+     ws.Range("P3") = ws.Cells(maxRowpercent, 9).Value
+     ws.Range("Q3").Style = "percent"
+     ws.Range("Q3").NumberFormat = "0.00%"
+     
+  'Total Value
+
+     
+     TotalValue = Worksheet.Max(ws.Range("L:L"))
+      
+     TotalValue = Worksheet.Match(max_Percent, ws.Range("L:L"), 0)
+     ws.Range("Q4") = max_value
+     ws.Range("P4") = ws.Cells(maxRowvalue, 9).Value
+     ws.Range("Q2").NumberFormat = "0.0000E+00"
+     
+     
+     
+     
+     
+ 
+  
+Next ws
+
+
+
+
+
+
+End Sub
+
+
+
+
